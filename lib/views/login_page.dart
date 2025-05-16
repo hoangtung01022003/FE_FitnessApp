@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../global/custom_button.dart';
 import '../global/header_bar.dart';
-import '../viewmodels/auth_viewmodel.dart';
 import 'register_page.dart';
 import '../global/custom_text_field.dart';
 
@@ -60,13 +59,13 @@ class LoginPage extends ConsumerWidget {
               child: CustomButton(
                 label: 'Sign in',
                 onPressed: () async {
-                  if (!Validators.isNotEmpty(emailController.text) || !Validators.isNotEmpty(passwordController.text)) {
+                  if (Validators.isNotEmpty(emailController.text) || Validators.isNotEmpty(passwordController.text)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('All fields are required')),
                     );
                     return;
                   }
-                  if (!Validators.isValidEmail(emailController.text)) {
+                  if (Validators.isValidEmail(emailController.text)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Invalid email format')),
                     );
