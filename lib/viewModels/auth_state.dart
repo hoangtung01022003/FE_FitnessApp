@@ -1,0 +1,1 @@
+// contain state of authentication
