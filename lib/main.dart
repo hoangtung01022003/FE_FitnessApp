@@ -1,7 +1,6 @@
-import 'package:finess_app/views/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'views/login_page.dart';
+import 'views/auth/index.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
