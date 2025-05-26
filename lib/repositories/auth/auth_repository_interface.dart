@@ -5,3 +5,5 @@ abstract class IAuthRepository {
   Future<AuthResponse> login(String email, String password);
   Future<void> logout(String token);
 }
+
+// DAO NGUOC SU PHU THUOC // CLEAN ARCHITECTURE

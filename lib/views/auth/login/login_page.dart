@@ -3,42 +3,42 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:finess_app/global/custom_button.dart';
 import 'package:finess_app/global/header_bar.dart';
 import 'package:finess_app/global/custom_text_field.dart';
-import 'package:finess_app/viewModels/auth/auth_providers.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
-import 'package:finess_app/views/auth/login/login_controller.dart';
+import 'package:finess_app/viewModels/auth/login_view_model.dart';
 import 'package:finess_app/views/auth/register/register_page.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Sử dụng ViewModel
+    final viewModel = ref.watch(loginViewModelProvider);
 
-class _LoginPageState extends ConsumerState<LoginPage> {
-  late LoginController _controller;
+    // Hiển thị thông báo lỗi
+    void showErrorMessage(String message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = LoginController(ref, context);
-  }
+    // Hiển thị thông báo thành công
+    void showSuccessMessage(String message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Theo dõi trạng thái xác thực
-    final authState = ref.watch(authNotifierProvider);
-
-    // Xử lý trạng thái khi thay đổi
+    // Lắng nghe sự thay đổi trạng thái xác thực
     ref.listen<AuthState>(
-      authNotifierProvider,
-      _controller.listenToAuthChanges,
+      viewModel.authProvider,
+      (prev, current) => viewModel.handleAuthChanges(
+        context,
+        prev,
+        current,
+        showErrorMessage,
+        showSuccessMessage,
+      ),
     );
 
     return Scaffold(
@@ -53,9 +53,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   const HeaderBar(title: 'Sign in'),
                   const SizedBox(height: 20),
                   CustomTextField(
-                      controller: _controller.emailController, hint: 'Email'),
+                      controller: viewModel.emailController, hint: 'Email'),
                   CustomTextField(
-                      controller: _controller.passwordController,
+                      controller: viewModel.passwordController,
                       hint: 'Password',
                       obscure: true),
                 ],
@@ -85,8 +85,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               left: 16,
               right: 16,
               child: CustomButton(
-                label: authState.isLoading ? 'Loading...' : 'Sign in',
-                onPressed: authState.isLoading ? null : _controller.handleLogin,
+                label: viewModel.isLoading ? 'Loading...' : 'Sign in',
+                onPressed: viewModel.isLoading ? null : viewModel.login,
               ),
             ),
           ],

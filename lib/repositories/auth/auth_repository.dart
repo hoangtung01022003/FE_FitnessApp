@@ -24,17 +24,17 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<AuthResponse> register(String username, String email, String password) async {
+  Future<AuthResponse> register(
+      String username, String email, String password) async {
     try {
       // Đảm bảo password có độ dài tối thiểu 8 ký tự theo yêu cầu backend
       if (password.length < 8) {
         throw Exception('Password must be at least 8 characters long');
       }
-      
       final response = await _dio.post(
         '/register',
         data: {
-          'username': username,  // Giữ nguyên là username theo yêu cầu của backend
+          'username': username,
           'email': email,
           'password': password,
         },

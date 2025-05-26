@@ -13,7 +13,7 @@ final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   return AuthRepository(dio);
 });
 
-// Provider cho state notifier xác thực
+// Provider - Cung cấp truy cập tới state và notifier
 final authNotifierProvider =
     StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
