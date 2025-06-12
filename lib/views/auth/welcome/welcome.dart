@@ -1,16 +1,33 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:finess_app/viewModels/welcome/welcome_view_model.dart';
+import 'package:finess_app/views/auth/welcome/step1_welcome.dart';
+import 'package:finess_app/views/auth/welcome/step2_fitness_level.dart';
+import 'package:finess_app/views/auth/welcome/step3_personal_details.dart';
 
-class Welcome extends StatefulWidget {
+class Welcome extends ConsumerWidget {
   const Welcome({super.key});
 
   @override
-  State<Welcome> createState() => _WelcomeState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(welcomeViewModelProvider);
 
-class _WelcomeState extends State<Welcome> {
-  @override
-  Widget build(BuildContext context) {
-    return const Text(
-        'Welcome to the Fitness App! Please log in or register to continue.');
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PageView(
+              controller: viewModel.pageController,
+              onPageChanged: viewModel.onPageChanged,
+              children: const [
+                Step1Welcome(),
+                Step2FitnessLevel(),
+                Step3PersonalDetails(),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
