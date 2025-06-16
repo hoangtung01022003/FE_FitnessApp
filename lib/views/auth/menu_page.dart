@@ -1,0 +1,143 @@
+import 'package:finess_app/views/auth/profile_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../viewModels/home_view_model.dart';
+
+class MenuPage extends ConsumerWidget {
+  const MenuPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(homeViewModelProvider);
+
+    return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            const SizedBox(height: 50),
+            const ListTile(
+              leading: CircleAvatar(),
+              title: Text('User'),
+              trailing: Icon(Icons.menu),
+            ),
+            const Divider(),
+            const ListTile(
+              leading: Icon(Icons.directions_run),
+              title: Text('Running'),
+            ),
+            const ListTile(
+              leading: Icon(Icons.self_improvement),
+              title: Text('Yoga'),
+              trailing: Icon(Icons.info_outline),
+            ),
+            const ListTile(
+              leading: Icon(Icons.fitness_center),
+              title: Text('Workout'),
+            ),
+            const ListTile(
+              leading: Icon(Icons.directions_walk),
+              title: Text('Walking'),
+            ),
+            const ListTile(
+              leading: Icon(Icons.sports_mma),
+              title: Text('Fitness'),
+              trailing: Icon(Icons.info_outline),
+            ),
+            const ListTile(
+              leading: Icon(Icons.sports_handball),
+              title: Text('Strength'),
+            ),
+            const Divider(),
+            const Spacer(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Log out'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                // Handle logout
+
+              },
+            ),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.grey.shade800,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          Container(
+            color: Colors.grey.shade800,
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const CircleAvatar(radius: 24, backgroundColor: Colors.white),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('User',
+                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                    GestureDetector(
+                      onTap: () {
+                        // Navigate to profile page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ProfilePage()),
+                        );
+                      },
+                      child: const Text(
+                        'Profile',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: GridView.count(
+              padding: const EdgeInsets.all(16),
+              crossAxisCount: 3,
+              childAspectRatio: 1,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              children: viewModel.menuItems.map((item) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 4),
+                    ],
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(item.icon, size: 30),
+                        const SizedBox(height: 8),
+                        Text(item.title, textAlign: TextAlign.center),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
