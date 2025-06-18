@@ -1,14 +1,15 @@
+import 'package:finess_app/views/auth/home_page.dart';
 import 'package:finess_app/views/auth/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../viewModels/home_view_model.dart';
+import '../../viewModels/menu_view_model.dart';
 
 class MenuPage extends ConsumerWidget {
   const MenuPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(homeViewModelProvider);
+    final viewModel = ref.watch(menuViewModelProvider);
 
     return Scaffold(
       drawer: Drawer(
@@ -114,22 +115,33 @@ class MenuPage extends ConsumerWidget {
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
               children: viewModel.menuItems.map((item) {
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black12, blurRadius: 4),
-                    ],
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(item.icon, size: 30),
-                        const SizedBox(height: 8),
-                        Text(item.title, textAlign: TextAlign.center),
+                return GestureDetector(
+                  onTap: () {
+                    // Handle item tap
+                    if (item.title == 'Home') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HomePage()),
+                      );
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 4),
                       ],
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(item.icon, size: 40),
+                          const SizedBox(height: 8),
+                          Text(item.title, textAlign: TextAlign.center),
+                        ],
+                      ),
                     ),
                   ),
                 );
