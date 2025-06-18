@@ -5,7 +5,11 @@ import 'package:finess_app/viewModels/welcome/welcome_view_model.dart';
 class GenderButton extends ConsumerWidget {
   final String gender;
 
-  const GenderButton({super.key, required this.gender});
+  const GenderButton(
+      {super.key,
+      required this.gender,
+      required bool isSelected,
+      required void Function() onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +24,8 @@ class GenderButton extends ConsumerWidget {
           side: const BorderSide(color: Colors.orange),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
-        onPressed: () => ref.read(welcomeViewModelProvider.notifier).selectGender(gender),
+        onPressed: () =>
+            ref.read(welcomeViewModelProvider.notifier).selectGender(gender),
         child: Text(
           gender,
           style: TextStyle(

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Fitness App',
-      home: MenuPage(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
