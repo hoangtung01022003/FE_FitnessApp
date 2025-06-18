@@ -1,3 +1,4 @@
+import 'package:finess_app/views/auth/menu_page.dart';
 import 'package:finess_app/views/auth/welcome/step1_welcome.dart';
 import 'package:finess_app/views/auth/welcome/step3_personal_details.dart';
 import 'package:finess_app/views/auth/welcome/welcome.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Fitness App',
-      home: Welcome(),
+      home: MenuPage(),
       debugShowCheckedModeBanner: false,
     );
   }
