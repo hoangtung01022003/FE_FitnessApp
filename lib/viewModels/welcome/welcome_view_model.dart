@@ -1,7 +1,10 @@
+import 'package:finess_app/services/ui/date_picker_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-final welcomeViewModelProvider = ChangeNotifierProvider((ref) => WelcomeViewModel());
+final welcomeViewModelProvider =
+    ChangeNotifierProvider((ref) => WelcomeViewModel());
 
 class WelcomeViewModel extends ChangeNotifier {
   final PageController pageController = PageController();
@@ -31,7 +34,7 @@ class WelcomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectBirthday(DateTime date) {
+  void setBirthday(DateTime? date) {
     selectedBirthday = date;
     notifyListeners();
   }
@@ -53,15 +56,33 @@ class WelcomeViewModel extends ChangeNotifier {
 
   void printPersonalDetails() {
     print('Personal Details:');
-    print('Birthday: ${selectedBirthday?.toString().split(' ')[0] ?? 'Not selected'}');
+    print(
+        'Birthday: ${selectedBirthday?.toString().split(' ')[0] ?? 'Not selected'}');
     print('Height: ${height?.toStringAsFixed(0) ?? 'Not set'} cm');
     print('Weight: ${weight?.toStringAsFixed(0) ?? 'Not set'} kg');
     print('Gender: ${selectedGender ?? 'Not selected'}');
   }
 
+  String get formattedBirthday {
+    if (selectedBirthday == null) return "Select your birthday";
+    return DateFormat('MMM dd, yyyy').format(selectedBirthday!);
+  }
+
+  Future<void> selectBirthday(BuildContext context) async {
+    final DateTime? picked = await DatePickerService.showCustomDatePicker(
+      context: context,
+      initialDate: selectedBirthday,
+      preventFutureDates: true,
+    );
+
+    if (picked != null) {
+      setBirthday(picked);
+    }
+  }
 
   /// Reusable UI builder for option widgets
-  Widget buildOption(BuildContext context, String title, String subtitle, bool isSelected, VoidCallback onTap) {
+  Widget buildOption(BuildContext context, String title, String subtitle,
+      bool isSelected, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -77,7 +98,9 @@ class WelcomeViewModel extends ChangeNotifier {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(title,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
                   Text(subtitle, style: const TextStyle(color: Colors.grey)),
                 ],
