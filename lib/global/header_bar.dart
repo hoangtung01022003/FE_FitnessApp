@@ -4,36 +4,42 @@ class HeaderBar extends StatelessWidget {
   final String title;
   final bool showBack;
   final VoidCallback? onBack;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color iconColor;
 
   const HeaderBar({
     super.key,
     required this.title,
     this.showBack = false,
     this.onBack,
+    this.backgroundColor = Colors.orangeAccent,
+    this.textColor = Colors.white,
+    this.iconColor = Colors.white,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      color: Colors.orangeAccent,
+      color: backgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         children: [
           if (showBack)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: iconColor),
               onPressed: onBack ?? () => Navigator.pop(context),
             ),
           Expanded(
             child: Center(
               child: Text(
                 title,
-                style: const TextStyle(color: Colors.white, fontSize: 20),
+                style: TextStyle(color: textColor, fontSize: 20),
               ),
             ),
           ),
-          if (showBack) const SizedBox(width: 48), // Placeholder to balance back button
+          if (showBack) const SizedBox(width: 48),
         ],
       ),
     );
