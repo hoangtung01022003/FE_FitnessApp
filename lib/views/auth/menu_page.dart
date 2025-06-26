@@ -9,7 +9,9 @@ class MenuPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(menuViewModelProvider);
+    // Tách biệt state và notifier theo mô hình MVVM
+    final state = ref.watch(menuViewModelProvider);
+    final viewModelNotifier = ref.read(menuViewModelProvider.notifier);
 
     return Scaffold(
       drawer: Drawer(
@@ -19,7 +21,10 @@ class MenuPage extends ConsumerWidget {
             const ListTile(
               leading: CircleAvatar(),
               title: Text('User'),
-              trailing: Icon(Icons.menu),
+              trailing: Icon(
+                Icons.menu,
+                color: Colors.red,
+              ),
             ),
             const Divider(),
             const ListTile(
@@ -55,15 +60,34 @@ class MenuPage extends ConsumerWidget {
               title: const Text('Log out'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-                // Handle logout
-
+                // Hiển thị dialog xác nhận trước khi đăng xuất
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Xác nhận đăng xuất'),
+                    content: const Text('Bạn có chắc chắn muốn đăng xuất?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('Hủy'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          viewModelNotifier.logout(context);
+                        },
+                        child: const Text('Đăng xuất'),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ],
         ),
       ),
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade800,
+        backgroundColor: const Color(0xFF8D8D8D),
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
@@ -74,7 +98,7 @@ class MenuPage extends ConsumerWidget {
       body: Column(
         children: [
           Container(
-            color: Colors.grey.shade800,
+            color: const Color(0xFF8D8D8D),
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -91,7 +115,8 @@ class MenuPage extends ConsumerWidget {
                         // Navigate to profile page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const ProfilePage()),
+                          MaterialPageRoute(
+                              builder: (_) => const ProfilePage()),
                         );
                       },
                       child: const Text(
@@ -114,7 +139,7 @@ class MenuPage extends ConsumerWidget {
               childAspectRatio: 1,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              children: viewModel.menuItems.map((item) {
+              children: viewModelNotifier.menuItems.map((item) {
                 return GestureDetector(
                   onTap: () {
                     // Handle item tap
@@ -137,9 +162,12 @@ class MenuPage extends ConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(item.icon, size: 40),
-                          const SizedBox(height: 8),
-                          Text(item.title, textAlign: TextAlign.center),
+                          Container(
+                            child: const Icon(Icons.home,
+                                color: Colors.red, size: 40),
+                            // const SizedBox(height: 8),
+                            //Text(item.title, textAlign: TextAlign.center),
+                          ),
                         ],
                       ),
                     ),

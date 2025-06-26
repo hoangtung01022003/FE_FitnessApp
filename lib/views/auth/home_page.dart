@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:finess_app/global/custom_button.dart';
 import 'package:finess_app/global/header_bar.dart';
 import 'package:finess_app/viewModels/home_view_model.dart';
-import 'package:finess_app/global/custom_button.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(homeViewModelProvider);
+    // Tách biệt state và notifier theo mô hình MVVM
+    // final state = ref.watch(homeViewModelProvider);
+    final viewModelNotifier = ref.read(homeViewModelProvider.notifier);
 
     return Scaffold(
       body: SafeArea(
@@ -41,29 +42,28 @@ class HomePage extends ConsumerWidget {
                             children: [
                               const Text('Training Day 1',
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      
-                                      )),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  )),
                               const SizedBox(height: 4),
                               const Text('Week 1',
                                   style: TextStyle(color: Colors.grey)),
                               const SizedBox(height: 16),
-                              viewModel.buildExerciseRow(
+                              viewModelNotifier.buildExerciseRow(
                                 icon: Icons.looks_one,
                                 label: 'Exercises 1',
                                 time: '7 min',
                                 iconColor: Colors.orange,
                               ),
                               const SizedBox(height: 12),
-                              viewModel.buildExerciseRow(
+                              viewModelNotifier.buildExerciseRow(
                                 icon: Icons.looks_two,
                                 label: 'Exercises 2',
                                 time: '15 min',
                                 iconColor: Colors.grey,
                               ),
                               const SizedBox(height: 12),
-                              viewModel.buildExerciseRow(
+                              viewModelNotifier.buildExerciseRow(
                                 icon: Icons.star,
                                 label: 'Finished',
                                 time: '5 min',
@@ -76,7 +76,8 @@ class HomePage extends ConsumerWidget {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (_) => const ExercisePage()),
+                                      MaterialPageRoute(
+                                          builder: (_) => const ExercisePage()),
                                     );
                                   }, // Add action here if needed
                                 ),

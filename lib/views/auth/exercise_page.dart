@@ -9,8 +9,11 @@ class ExercisePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(exercisesViewModelProvider);
-    final categories = viewModel.categories;
+    // Tách biệt state và notifier theo mô hình MVVM
+    final state = ref.watch(exercisesViewModelProvider);
+    final viewModelNotifier = ref.read(exercisesViewModelProvider.notifier);
+
+    final categories = state.categories;
 
     return Scaffold(
       body: SafeArea(
@@ -43,12 +46,11 @@ class ExercisePage extends ConsumerWidget {
                           itemBuilder: (context, index) {
                             final category = categories[index];
                             final isSelected =
-                                viewModel.selectedCategory == category;
+                                state.selectedCategory == category;
 
                             return GestureDetector(
-                              onTap: () => ref
-                                  .read(exercisesViewModelProvider.notifier)
-                                  .selectCategory(category),
+                              onTap: () =>
+                                  viewModelNotifier.selectCategory(category),
                               child: Container(
                                 width: tabWidth,
                                 decoration: BoxDecoration(

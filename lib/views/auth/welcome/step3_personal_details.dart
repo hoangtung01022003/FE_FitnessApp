@@ -1,5 +1,6 @@
 import 'package:finess_app/global/gender_button.dart';
 import 'package:finess_app/global/pesonal_detail_field.dart';
+import 'package:finess_app/views/auth/menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:finess_app/viewModels/welcome/welcome_view_model.dart';
@@ -20,10 +21,13 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
   final TextEditingController _weightController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
-    final viewModel = ref.read(welcomeViewModelProvider);
+    // Tách biệt notifier và state theo mô hình MVVM
+    final viewModelNotifier = ref.read(welcomeViewModelProvider.notifier);
+    final state = ref.read(welcomeViewModelProvider);
+
     final DateTime now = DateTime.now();
-    final DateTime initialDate = viewModel.selectedBirthday ??
-        DateTime(now.year - 18, now.month, now.day);
+    final DateTime initialDate =
+        state.selectedBirthday ?? DateTime(now.year - 18, now.month, now.day);
 
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -44,9 +48,9 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
     if (picked != null) {
       // Nếu chọn ngày trong tương lai, reset về ngày hiện tại
       if (picked.isAfter(now)) {
-        viewModel.setBirthday(now);
+        viewModelNotifier.setBirthday(now);
       } else {
-        viewModel.setBirthday(picked);
+        viewModelNotifier.setBirthday(picked);
       }
       setState(() {}); // Cập nhật UI
     }
@@ -55,12 +59,14 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
   @override
   void initState() {
     super.initState();
-    final viewModel = ref.read(welcomeViewModelProvider);
-    if (viewModel.height != null) {
-      _heightController.text = viewModel.height!.toStringAsFixed(0);
+    // Đọc state từ provider
+    final state = ref.read(welcomeViewModelProvider);
+
+    if (state.height != null) {
+      _heightController.text = state.height!.toStringAsFixed(0);
     }
-    if (viewModel.weight != null) {
-      _weightController.text = viewModel.weight!.toStringAsFixed(0);
+    if (state.weight != null) {
+      _weightController.text = state.weight!.toStringAsFixed(0);
     }
   }
 
@@ -73,9 +79,12 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = ref.read(welcomeViewModelProvider);
-    String birthdayText = viewModel.selectedBirthday != null
-        ? DateFormat('MMM dd, yyyy').format(viewModel.selectedBirthday!)
+    // Tách biệt notifier và state theo mô hình MVVM
+    final viewModelNotifier = ref.read(welcomeViewModelProvider.notifier);
+    final state = ref.watch(welcomeViewModelProvider);
+
+    String birthdayText = state.selectedBirthday != null
+        ? DateFormat('MMM dd, yyyy').format(state.selectedBirthday!)
         : "Select your birthday";
 
     return Scaffold(
@@ -83,28 +92,28 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     "Step 3 of 3",
                     style: TextStyle(color: Colors.orange, fontSize: 16),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     "Welcome to\nFitness Application",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 12),
-                  Text(
+                  const SizedBox(height: 12),
+                  const Text(
                     "Personalized workouts will help you gain strength, get in better shape and embrace a healthy lifestyle",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // Date picker field
                   PesonalDetailField(
@@ -113,7 +122,7 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
                     onTap: () => _selectDate(context),
                   ),
 
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   PesonalDetailField(
                     label: "Height",
                     value: "",
@@ -122,11 +131,12 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
                     controller: _heightController,
                     onChanged: (value) {
                       if (value.isNotEmpty) {
-                        viewModel.setHeight(double.tryParse(value) ?? 0);
+                        viewModelNotifier
+                            .setHeight(double.tryParse(value) ?? 0);
                       }
                     },
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   PesonalDetailField(
                     label: "Weight",
                     value: "",
@@ -135,17 +145,18 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
                     controller: _weightController,
                     onChanged: (value) {
                       if (value.isNotEmpty) {
-                        viewModel.setWeight(double.tryParse(value) ?? 0);
+                        viewModelNotifier
+                            .setWeight(double.tryParse(value) ?? 0);
                       }
                     },
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Gender',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
@@ -154,13 +165,14 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
                         children: [
                           GenderButton(
                             gender: "Male",
-                            isSelected: viewModel.selectedGender == "Male",
-                            onTap: () => viewModel.selectGender("Male"),
+                            isSelected: state.selectedGender == "Male",
+                            onTap: () => viewModelNotifier.selectGender("Male"),
                           ),
                           GenderButton(
                             gender: "Female",
-                            isSelected: viewModel.selectedGender == "Female",
-                            onTap: () => viewModel.selectGender("Female"),
+                            isSelected: state.selectedGender == "Female",
+                            onTap: () =>
+                                viewModelNotifier.selectGender("Female"),
                           ),
                         ],
                       ),
@@ -175,9 +187,30 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
               right: 16,
               child: CustomButton(
                 label: 'Get Started',
-                onPressed: () {
-                  // You can handle button press here, maybe print selectedGender etc.
-                  print('Selected Gender: ${viewModel.selectedGender}');
+                onPressed: () async {
+                  final viewModelNotifier =
+                      ref.read(welcomeViewModelProvider.notifier);
+                  final success = viewModelNotifier.saveProfile();
+
+                  if (await success) {
+                    // Navigate to the main app screen or dashboard
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const MenuPage(),
+                      ),
+                    );
+                  } else {
+                    // Show error message if profile validation failed
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            ref.read(welcomeViewModelProvider).errorMessage ??
+                                'Please fill in all required fields correctly'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
               ),
             ),
@@ -188,7 +221,7 @@ class _Step3PersonalDetailsState extends ConsumerState<Step3PersonalDetails> {
               child: TappableDotIndicator(
                 currentIndex: 2,
                 totalDots: 3,
-                onTap: viewModel.goToPage,
+                onTap: viewModelNotifier.goToPage,
               ),
             ),
           ],

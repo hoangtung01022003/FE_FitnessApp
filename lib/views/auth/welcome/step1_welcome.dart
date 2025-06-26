@@ -10,7 +10,10 @@ class Step1Welcome extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.read(welcomeViewModelProvider);
+    // Truy cập notifier để gọi các phương thức
+    final viewModelNotifier = ref.read(welcomeViewModelProvider.notifier);
+    // Truy cập state để lấy dữ liệu
+    final state = ref.watch(welcomeViewModelProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -31,7 +34,8 @@ class Step1Welcome extends ConsumerWidget {
                       const Text(
                         "Welcome to Fitness Application",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 12),
                       const Padding(
@@ -53,14 +57,14 @@ class Step1Welcome extends ConsumerWidget {
                   CustomButton(
                     label: 'Get Started',
                     onPressed: () {
-                      viewModel.goToPage(1);
+                      viewModelNotifier.goToPage(1);
                     },
                   ),
                   const SizedBox(height: 20),
                   TappableDotIndicator(
-                    currentIndex: 0,
+                    currentIndex: state.currentPage,
                     totalDots: 3,
-                    onTap: viewModel.goToPage,
+                    onTap: viewModelNotifier.goToPage,
                   ),
                   const SizedBox(height: 20),
                 ],

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:finess_app/routes/router.dart';
 import 'package:finess_app/viewModels/auth/auth_providers.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/auth_notifier.dart';
-import 'package:finess_app/views/auth/welcome/welcome.dart';
 
 // Provider cho LoginViewModel
 final loginViewModelProvider = Provider.autoDispose<LoginViewModel>((ref) {
@@ -97,11 +97,29 @@ class LoginViewModel {
       onSuccess('Đăng nhập thành công');
 
       // Sử dụng Future.microtask để tránh thay đổi state trong lúc đang build
-      Future.microtask(() {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const Welcome()),
-        );
+      Future.microtask(() async {
+        // Kiểm tra xem người dùng đã hoàn thành onboarding chưa
+        final hasCompletedOnboarding = await ref
+            .read(authNotifierProvider.notifier)
+            .hasCompletedOnboarding();
+
+        if (!hasCompletedOnboarding) {
+          // Nếu chưa hoàn thành onboarding, chuyển đến màn hình welcome
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRouter.welcome,
+              (route) => false, // Xóa tất cả màn hình trước đó
+            );
+          }
+        } else {
+          // Nếu đã hoàn thành onboarding, chuyển đến màn hình chính
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRouter.home,
+              (route) => false, // Xóa tất cả màn hình trước đó
+            );
+          }
+        }
       });
     }
   }

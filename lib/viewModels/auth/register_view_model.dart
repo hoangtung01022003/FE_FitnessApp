@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:finess_app/routes/router.dart';
 import 'package:finess_app/viewModels/auth/auth_providers.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/auth_notifier.dart';
-import 'package:finess_app/views/auth/welcome/welcome.dart';
+// import 'package:finess_app/views/auth/welcome/welcome.dart';
 
 // Provider cho RegisterViewModel
 final registerViewModelProvider =
@@ -66,13 +67,19 @@ class RegisterViewModel {
 
     // Reset flag chuyển hướng khi thực hiện đăng ký mới
     _navigationHandled = false;
+    _errorHandled = false;
 
     // Gọi register từ authNotifier
-    await ref.read(authNotifierProvider.notifier).register(
-          usernameController.text.trim(),
-          emailController.text.trim(),
-          passwordController.text,
-        );
+    try {
+      await ref.read(authNotifierProvider.notifier).register(
+            usernameController.text.trim(),
+            emailController.text.trim(),
+            passwordController.text,
+          );
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print('Error during registration: $e');
+    }
   }
 
   // Xử lý sự kiện khi trạng thái xác thực thay đổi
@@ -101,10 +108,13 @@ class RegisterViewModel {
 
       // Sử dụng Future.microtask để tránh thay đổi state trong lúc đang build
       Future.microtask(() {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const Welcome()),
-        );
+        // Người dùng mới đăng ký luôn cần đi qua màn hình onboarding
+        if (context.mounted) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRouter.welcome,
+            (route) => false, // Xóa tất cả màn hình trước đó
+          );
+        }
       });
     }
   }

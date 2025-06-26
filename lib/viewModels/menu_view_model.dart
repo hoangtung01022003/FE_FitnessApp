@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../views/auth/profile_page.dart';
-
-final menuViewModelProvider = ChangeNotifierProvider((ref) => MenuViewModel());
+import 'package:finess_app/routes/router.dart';
+import 'package:finess_app/viewModels/auth/auth_providers.dart';
 
 class MenuItem {
   final String title;
@@ -11,18 +10,42 @@ class MenuItem {
   MenuItem({required this.title, required this.icon});
 }
 
-class MenuViewModel extends ChangeNotifier {
-  String _selectedItem = 'Running';
+// Tạo class state để lưu trữ trạng thái
+class MenuState {
+  final String selectedItem;
 
-  String get selectedItem => _selectedItem;
+  const MenuState({
+    this.selectedItem = 'Running',
+  });
+
+  // Phương thức để tạo một state mới dựa trên state hiện tại
+  MenuState copyWith({
+    String? selectedItem,
+  }) {
+    return MenuState(
+      selectedItem: selectedItem ?? this.selectedItem,
+    );
+  }
+}
+
+// Chuyển đổi từ ChangeNotifierProvider sang StateNotifierProvider
+final menuViewModelProvider = StateNotifierProvider<MenuViewModel, MenuState>(
+    (ref) => MenuViewModel(ref: ref));
+
+// Chuyển đổi từ ChangeNotifier sang StateNotifier
+class MenuViewModel extends StateNotifier<MenuState> {
+  final Ref? _ref; // Thay đổi kiểu từ Ref sang Ref?
+
+  MenuViewModel({Ref? ref})
+      : _ref = ref,
+        super(const MenuState());
 
   void selectItem(String item) {
-    _selectedItem = item;
-    notifyListeners();
+    state = state.copyWith(selectedItem: item);
   }
 
-  bool isSelected(String item) => _selectedItem == item;
-  
+  bool isSelected(String item) => state.selectedItem == item;
+
   List<String> get drawerItems => [
         'Running',
         'Yoga',
@@ -53,4 +76,19 @@ class MenuViewModel extends ChangeNotifier {
     MenuItem(title: 'Settings', icon: Icons.settings),
     MenuItem(title: 'Support', icon: Icons.support_agent),
   ];
+
+  // Thêm phương thức đăng xuất
+  Future<void> logout(BuildContext context) async {
+    try {
+      await _ref?.read(authNotifierProvider.notifier).logout();
+
+      // Điều hướng về màn hình đăng nhập sau khi đăng xuất
+      if (context.mounted) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+      }
+    } catch (e) {
+      print('Lỗi khi đăng xuất: $e');
+    }
+  }
 }

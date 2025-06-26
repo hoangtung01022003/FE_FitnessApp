@@ -1,27 +1,81 @@
+import 'package:finess_app/models/user/user_profile.dart';
 import 'package:finess_app/services/ui/date_picker_service.dart';
+import 'package:finess_app/viewModels/auth/auth_providers.dart';
+import 'package:finess_app/viewModels/user/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-final welcomeViewModelProvider =
-    ChangeNotifierProvider((ref) => WelcomeViewModel());
+// Tạo model state riêng biệt để quản lý trạng thái
+class WelcomeState {
+  final PageController pageController;
+  final int currentPage;
+  final String? selectedFitnessLevel;
+  final DateTime? selectedBirthday;
+  final double? height;
+  final double? weight;
+  final String? selectedGender;
+  final bool isLoading;
+  final String? errorMessage;
 
-class WelcomeViewModel extends ChangeNotifier {
-  final PageController pageController = PageController();
-  int currentPage = 0;
-  String? selectedFitnessLevel;
-  DateTime? selectedBirthday;
-  double? height;
-  double? weight;
-  String? selectedGender;
+  WelcomeState({
+    required this.pageController,
+    this.currentPage = 0,
+    this.selectedFitnessLevel,
+    this.selectedBirthday,
+    this.height,
+    this.weight,
+    this.selectedGender,
+    this.isLoading = false,
+    this.errorMessage,
+  });
+
+  // Phương thức để tạo state mới dựa trên state hiện tại
+  WelcomeState copyWith({
+    PageController? pageController,
+    int? currentPage,
+    String? selectedFitnessLevel,
+    DateTime? selectedBirthday,
+    double? height,
+    double? weight,
+    String? selectedGender,
+    bool? isLoading,
+    String? errorMessage,
+  }) {
+    return WelcomeState(
+      pageController: pageController ?? this.pageController,
+      currentPage: currentPage ?? this.currentPage,
+      selectedFitnessLevel: selectedFitnessLevel ?? this.selectedFitnessLevel,
+      selectedBirthday: selectedBirthday ?? this.selectedBirthday,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      selectedGender: selectedGender ?? this.selectedGender,
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage,
+    );
+  }
+}
+
+// Định nghĩa provider sử dụng StateNotifierProvider
+final welcomeViewModelProvider =
+    StateNotifierProvider<WelcomeViewModel, WelcomeState>((ref) {
+  return WelcomeViewModel(ref);
+});
+
+class WelcomeViewModel extends StateNotifier<WelcomeState> {
+  final Ref _ref;
+
+  WelcomeViewModel(this._ref)
+      : super(WelcomeState(
+          pageController: PageController(),
+        ));
 
   void onPageChanged(int index) {
-    currentPage = index;
-    notifyListeners();
+    state = state.copyWith(currentPage: index);
   }
 
   void goToPage(int index) {
-    pageController.animateToPage(
+    state.pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -29,49 +83,109 @@ class WelcomeViewModel extends ChangeNotifier {
   }
 
   void selectFitnessLevel(String level) {
-    selectedFitnessLevel = level;
     print('Selected fitness level: $level');
-    notifyListeners();
+    state = state.copyWith(selectedFitnessLevel: level);
+    print('Selected fitness level: ${state.selectedFitnessLevel}');
   }
 
   void setBirthday(DateTime? date) {
-    selectedBirthday = date;
-    notifyListeners();
+    state = state.copyWith(selectedBirthday: date);
   }
 
   void setHeight(double newHeight) {
-    height = newHeight;
-    notifyListeners();
+    state = state.copyWith(height: newHeight);
   }
 
   void setWeight(double newWeight) {
-    weight = newWeight;
-    notifyListeners();
+    state = state.copyWith(weight: newWeight);
   }
 
   void selectGender(String gender) {
-    selectedGender = gender;
-    notifyListeners();
+    state = state.copyWith(selectedGender: gender);
+  }
+
+  // Phương thức mới để lưu profile
+  Future<bool> saveProfile() async {
+    if (!validateProfile()) {
+      return false;
+    }
+
+    try {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+      print(
+          'Selected fitness level before save: ${state.selectedFitnessLevel}');
+
+      final userProfile = UserProfile(
+        birthday: state.selectedBirthday,
+        height: state.height,
+        weight: state.weight,
+        gender: state.selectedGender,
+        fitnessLevel: state.selectedFitnessLevel,
+      );
+      print('UserProfile to save: ${userProfile.toJson()}');
+
+      await _ref
+          .read(userProfileProvider.notifier)
+          .createOrUpdateProfile(userProfile);
+
+      // Đánh dấu người dùng đã hoàn thành onboarding
+      await _ref.read(authNotifierProvider.notifier).completeOnboarding();
+
+      state = state.copyWith(isLoading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      return false;
+    }
+  }
+
+  bool validateProfile() {
+    if (state.selectedBirthday == null) {
+      state = state.copyWith(errorMessage: "Vui lòng chọn ngày sinh");
+      return false;
+    }
+
+    if (state.height == null || state.height! <= 0) {
+      state = state.copyWith(errorMessage: "Vui lòng nhập chiều cao hợp lệ");
+      return false;
+    }
+
+    if (state.weight == null || state.weight! <= 0) {
+      state = state.copyWith(errorMessage: "Vui lòng nhập cân nặng hợp lệ");
+      return false;
+    }
+
+    if (state.selectedGender == null) {
+      state = state.copyWith(errorMessage: "Vui lòng chọn giới tính");
+      return false;
+    }
+
+    if (state.selectedFitnessLevel == null) {
+      state = state.copyWith(errorMessage: "Vui lòng chọn mức độ thể lực");
+      return false;
+    }
+
+    return true;
   }
 
   void printPersonalDetails() {
     print('Personal Details:');
     print(
-        'Birthday: ${selectedBirthday?.toString().split(' ')[0] ?? 'Not selected'}');
-    print('Height: ${height?.toStringAsFixed(0) ?? 'Not set'} cm');
-    print('Weight: ${weight?.toStringAsFixed(0) ?? 'Not set'} kg');
-    print('Gender: ${selectedGender ?? 'Not selected'}');
+        'Birthday: ${state.selectedBirthday?.toString().split(' ')[0] ?? 'Not selected'}');
+    print('Height: ${state.height?.toStringAsFixed(0) ?? 'Not set'} cm');
+    print('Weight: ${state.weight?.toStringAsFixed(0) ?? 'Not set'} kg');
+    print('Gender: ${state.selectedGender ?? 'Not selected'}');
   }
 
   String get formattedBirthday {
-    if (selectedBirthday == null) return "Select your birthday";
-    return DateFormat('MMM dd, yyyy').format(selectedBirthday!);
+    if (state.selectedBirthday == null) return "Select your birthday";
+    return DateFormat('MMM dd, yyyy').format(state.selectedBirthday!);
   }
 
   Future<void> selectBirthday(BuildContext context) async {
     final DateTime? picked = await DatePickerService.showCustomDatePicker(
       context: context,
-      initialDate: selectedBirthday,
+      initialDate: state.selectedBirthday,
       preventFutureDates: true,
     );
 

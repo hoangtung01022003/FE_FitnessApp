@@ -1,4 +1,4 @@
-import 'package:finess_app/models/user.dart';
+import 'package:finess_app/models/user/user.dart';
 
 class AuthResponse {
   final String message;
