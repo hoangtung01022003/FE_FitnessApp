@@ -24,22 +24,23 @@ class HeaderBar extends StatelessWidget {
       width: double.infinity,
       color: backgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Row(
+      child: Stack(
+        alignment: Alignment.center,
         children: [
           if (showBack)
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: iconColor),
-              onPressed: onBack ?? () => Navigator.pop(context),
-            ),
-          Expanded(
-            child: Center(
-              child: Text(
-                title,
-                style: TextStyle(color: textColor, fontSize: 20),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: iconColor),
+                onPressed: onBack ?? () => Navigator.pop(context),
               ),
             ),
+          Center(
+            child: Text(
+              title,
+              style: TextStyle(color: textColor, fontSize: 20),
+            ),
           ),
-          if (showBack) const SizedBox(width: 48),
         ],
       ),
     );

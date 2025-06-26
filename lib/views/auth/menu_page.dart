@@ -137,7 +137,7 @@ class MenuPage extends ConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(item.icon, size: 40),
+                          Icon(item.icon, size: 40, color: item.color ?? Colors.black),
                           const SizedBox(height: 8),
                           Text(item.title, textAlign: TextAlign.center),
                         ],

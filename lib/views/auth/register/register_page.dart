@@ -44,28 +44,40 @@ class RegisterPage extends ConsumerWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HeaderBar(title: 'Register', showBack: true),
-                  const SizedBox(height: 20),
-                  CustomTextField(
-                      controller: viewModel.usernameController,
-                      hint: 'Username'),
-                  CustomTextField(
-                      controller: viewModel.emailController, hint: 'Email'),
-                  CustomTextField(
-                      controller: viewModel.passwordController,
-                      hint: 'Password',
-                      obscure: true),
-                  CustomTextField(
-                      controller: viewModel.confirmPasswordController,
-                      hint: 'Confirm Password',
-                      obscure: true),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const HeaderBar(title: 'Register', showBack: true),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        CustomTextField(
+                          controller: viewModel.usernameController,
+                          hint: 'Username',
+                        ),
+                        CustomTextField(
+                          controller: viewModel.emailController,
+                          hint: 'Email',
+                        ),
+                        CustomTextField(
+                          controller: viewModel.passwordController,
+                          hint: 'Password',
+                          obscure: true,
+                        ),
+                        CustomTextField(
+                          controller: viewModel.confirmPasswordController,
+                          hint: 'Confirm Password',
+                          obscure: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             Positioned(
               bottom: 50,
