@@ -6,9 +6,8 @@ import 'package:finess_app/viewModels/auth/auth_providers.dart';
 class MenuItem {
   final String title;
   final IconData icon;
-  final Color? color;
 
-  MenuItem({required this.title, required this.icon, this.color});
+  MenuItem({required this.title, required this.icon});
 }
 
 // Tạo class state để lưu trữ trạng thái
@@ -66,16 +65,16 @@ class MenuViewModel extends StateNotifier<MenuState> {
       ];
 
   final List<MenuItem> menuItems = [
-    MenuItem(title: 'Home', icon: Icons.home, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Weight', icon: Icons.monitor_weight, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Training plan', icon: Icons.fitness_center, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Training Stats', icon: Icons.bar_chart, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Meal Plan', icon: Icons.restaurant, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Schedule', icon: Icons.schedule, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Exercises', icon: Icons.directions_run, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Tips', icon: Icons.lightbulb, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Settings', icon: Icons.settings, color: const Color(0xFFFF9B70)),
-    MenuItem(title: 'Support', icon: Icons.support_agent, color: const Color(0xFFFF9B70)),
+    MenuItem(title: 'Home', icon: Icons.home),
+    MenuItem(title: 'Weight', icon: Icons.monitor_weight),
+    MenuItem(title: 'Training plan', icon: Icons.fitness_center),
+    MenuItem(title: 'Training Stats', icon: Icons.bar_chart),
+    MenuItem(title: 'Meal Plan', icon: Icons.restaurant),
+    MenuItem(title: 'Schedule', icon: Icons.schedule),
+    MenuItem(title: 'Exercises', icon: Icons.directions_run),
+    MenuItem(title: 'Tips', icon: Icons.lightbulb),
+    MenuItem(title: 'Settings', icon: Icons.settings),
+    MenuItem(title: 'Support', icon: Icons.support_agent),
   ];
 
   // Thêm phương thức đăng xuất

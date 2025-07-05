@@ -22,12 +22,10 @@ class ExercisesState {
   }
 }
 
-// Chuyển đổi từ ChangeNotifierProvider sang StateNotifierProvider
 final exercisesViewModelProvider =
     StateNotifierProvider<ExercisesViewModel, ExercisesState>(
         (ref) => ExercisesViewModel());
 
-// Chuyển đổi từ ChangeNotifier sang StateNotifier
 class ExercisesViewModel extends StateNotifier<ExercisesState> {
   ExercisesViewModel() : super(const ExercisesState());
 

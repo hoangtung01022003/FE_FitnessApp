@@ -3,8 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ApiService {
   final Dio _dio = Dio();
-  final String _baseUrl =
-      'https://docker-be-fitnessapp-production.up.railway.app/api';
+  final String _baseUrl = 'http://localhost:8000/api';
 
   // Sử dụng CORS proxy để bypass CORS
   final String _corsProxyUrl = 'https://corsproxy.io/?';

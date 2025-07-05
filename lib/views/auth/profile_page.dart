@@ -5,11 +5,19 @@ import 'package:finess_app/global/custom_bottom_nav_bar.dart';
 import 'package:finess_app/global/gender_button.dart';
 import 'package:finess_app/global/pesonal_detail_field.dart';
 
-class ProfilePage extends ConsumerWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends ConsumerState<ProfilePage> {
+  // Thêm state để lưu giới tính được chọn
+  String? selectedGender = "Male"; // Mặc định chọn Nam
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -32,19 +40,29 @@ class ProfilePage extends ConsumerWidget {
                     const SizedBox(height: 8),
                     const PesonalDetailField(label: "Weight", value: "75 kg"),
                     const SizedBox(height: 8),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Gender',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                         Row(
                           children: [
-                            GenderButton(gender: "Male"),
-                            GenderButton(gender: "Female"),
+                            GenderButton(
+                              gender: "Male",
+                              isSelected: selectedGender == "Male",
+                              onTap: () =>
+                                  setState(() => selectedGender = "Male"),
+                            ),
+                            GenderButton(
+                              gender: "Female",
+                              isSelected: selectedGender == "Female",
+                              onTap: () =>
+                                  setState(() => selectedGender = "Female"),
+                            ),
                           ],
                         ),
                       ],

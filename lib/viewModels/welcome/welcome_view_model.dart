@@ -62,6 +62,7 @@ final welcomeViewModelProvider =
   return WelcomeViewModel(ref);
 });
 
+// Chuyển từ ChangeNotifier sang StateNotifier
 class WelcomeViewModel extends StateNotifier<WelcomeState> {
   final Ref _ref;
 
