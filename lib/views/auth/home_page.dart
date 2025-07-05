@@ -10,8 +10,6 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Tách biệt state và notifier theo mô hình MVVM
-    // final state = ref.watch(homeViewModelProvider);
     final viewModelNotifier = ref.read(homeViewModelProvider.notifier);
 
     return Scaffold(

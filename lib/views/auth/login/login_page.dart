@@ -45,21 +45,31 @@ class LoginPage extends ConsumerWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HeaderBar(title: 'Sign in'),
-                  const SizedBox(height: 20),
-                  CustomTextField(
-                      controller: viewModel.emailController, hint: 'Email'),
-                  CustomTextField(
-                      controller: viewModel.passwordController,
-                      hint: 'Password',
-                      obscure: true),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const HeaderBar(title: 'Sign in'),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        CustomTextField(
+                          controller: viewModel.emailController,
+                          hint: 'Email',
+                        ),
+                        CustomTextField(
+                          controller: viewModel.passwordController,
+                          hint: 'Password',
+                          obscure: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             Positioned(
               bottom: 110,
