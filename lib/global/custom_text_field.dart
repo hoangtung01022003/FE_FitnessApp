@@ -4,12 +4,14 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool obscure;
+  final Widget? suffixIcon; // Thêm tham số suffixIcon
 
   const CustomTextField({
     super.key,
     required this.controller,
     required this.hint,
     this.obscure = false,
+    this.suffixIcon, // Thêm tham số này vào constructor
   });
 
   @override
@@ -28,6 +30,7 @@ class CustomTextField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           border: InputBorder.none,
+          suffixIcon: suffixIcon, // Sử dụng suffixIcon trong decoration
         ),
       ),
     );

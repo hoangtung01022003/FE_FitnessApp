@@ -1,17 +1,35 @@
 import 'package:finess_app/views/auth/home_page.dart';
 import 'package:finess_app/views/auth/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../viewModels/menu_view_model.dart';
 
-class MenuPage extends ConsumerWidget {
+class MenuPage extends HookConsumerWidget {
   const MenuPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Sử dụng useMemoized để tối ưu hóa các giá trị không thay đổi
+    final menuItems =
+        useMemoized(() => ref.read(menuViewModelProvider.notifier).menuItems);
+
     // Tách biệt state và notifier theo mô hình MVVM
     final state = ref.watch(menuViewModelProvider);
     final viewModelNotifier = ref.read(menuViewModelProvider.notifier);
+
+    // Sử dụng useEffect để thực hiện các thao tác khi widget được render
+    useEffect(() {
+      // Có thể thực hiện các side-effects ở đây, ví dụ:
+      // - Khởi tạo dữ liệu
+      // - Đăng ký các sự kiện
+      // - Gọi API khi widget được tạo
+
+      return () {
+        // Cleanup function khi widget bị dispose
+        // Đây là nơi để giải phóng tài nguyên nếu cần
+      };
+    }, const []); // Empty dependency array = chỉ chạy một lần khi widget được tạo
 
     return Scaffold(
       drawer: Drawer(
@@ -139,7 +157,7 @@ class MenuPage extends ConsumerWidget {
               childAspectRatio: 1,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              children: viewModelNotifier.menuItems.map((item) {
+              children: menuItems.map((item) {
                 return GestureDetector(
                   onTap: () {
                     // Handle item tap
@@ -162,12 +180,9 @@ class MenuPage extends ConsumerWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            child: const Icon(Icons.home,
-                                color: Colors.red, size: 40),
-                            // const SizedBox(height: 8),
-                            //Text(item.title, textAlign: TextAlign.center),
-                          ),
+                          Icon(item.icon, color: Colors.red, size: 40),
+                          const SizedBox(height: 8),
+                          Text(item.title, textAlign: TextAlign.center),
                         ],
                       ),
                     ),

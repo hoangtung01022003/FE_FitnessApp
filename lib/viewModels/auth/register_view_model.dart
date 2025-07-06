@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:finess_app/routes/router.dart';
 import 'package:finess_app/viewModels/auth/auth_providers.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/auth_notifier.dart';
-// import 'package:finess_app/views/auth/welcome/welcome.dart';
 
 // Provider cho RegisterViewModel
 final registerViewModelProvider =
@@ -16,11 +15,10 @@ class RegisterViewModel {
   final Ref ref;
 
   // Controllers cho các trường nhập liệu
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   // Flag để theo dõi trạng thái lỗi đã xử lý
   bool _errorHandled = false;
@@ -28,6 +26,19 @@ class RegisterViewModel {
   bool _navigationHandled = false;
 
   RegisterViewModel(this.ref);
+
+  // Phương thức mới để cập nhật controllers từ hooks
+  void setControllers(
+    TextEditingController username,
+    TextEditingController email,
+    TextEditingController password,
+    TextEditingController confirmPassword,
+  ) {
+    usernameController = username;
+    emailController = email;
+    passwordController = password;
+    confirmPasswordController = confirmPassword;
+  }
 
   // Kiểm tra trạng thái loading
   bool get isLoading => ref.read(authNotifierProvider).isLoading;
@@ -119,11 +130,5 @@ class RegisterViewModel {
     }
   }
 
-  // Giải phóng tài nguyên khi không sử dụng nữa
-  void dispose() {
-    usernameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-  }
+  // Không cần gọi dispose nữa vì controllers được quản lý bởi hooks
 }

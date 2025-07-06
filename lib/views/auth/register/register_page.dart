@@ -1,18 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:finess_app/global/custom_button.dart';
 import 'package:finess_app/global/header_bar.dart';
 import 'package:finess_app/global/custom_text_field.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/register_view_model.dart';
 
-class RegisterPage extends ConsumerWidget {
+class RegisterPage extends HookConsumerWidget {
   const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Sử dụng ViewModel thay vì controller
+    // Sử dụng TextEditingController với hooks để tự động dispose
+    final usernameController = useTextEditingController();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final confirmPasswordController = useTextEditingController();
+
+    // Tạo state cho việc hiển thị password
+    final obscurePassword = useState(true);
+    final obscureConfirmPassword = useState(true);
+
+    // Animation controller cho button loading
+    final animationController =
+        useAnimationController(duration: const Duration(milliseconds: 300));
+
+    // Sử dụng ViewModel
     final viewModel = ref.watch(registerViewModelProvider);
+
+    // Thêm các controller từ hook vào view model
+    useEffect(() {
+      viewModel.setControllers(usernameController, emailController,
+          passwordController, confirmPasswordController);
+      return null;
+    }, []);
+
+    // Hook để animate loading button khi state thay đổi
+    useEffect(() {
+      if (viewModel.isLoading) {
+        animationController.forward();
+      } else {
+        animationController.reverse();
+      }
+      return null;
+    }, [viewModel.isLoading]);
 
     // Hiển thị thông báo lỗi
     void showErrorMessage(String message) {
@@ -56,22 +88,40 @@ class RegisterPage extends ConsumerWidget {
                       children: [
                         const SizedBox(height: 20),
                         CustomTextField(
-                          controller: viewModel.usernameController,
+                          controller: usernameController,
                           hint: 'Username',
                         ),
                         CustomTextField(
-                          controller: viewModel.emailController,
+                          controller: emailController,
                           hint: 'Email',
                         ),
                         CustomTextField(
-                          controller: viewModel.passwordController,
+                          controller: passwordController,
                           hint: 'Password',
-                          obscure: true,
+                          obscure: obscurePassword.value,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              obscurePassword.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () =>
+                                obscurePassword.value = !obscurePassword.value,
+                          ),
                         ),
                         CustomTextField(
-                          controller: viewModel.confirmPasswordController,
+                          controller: confirmPasswordController,
                           hint: 'Confirm Password',
-                          obscure: true,
+                          obscure: obscureConfirmPassword.value,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              obscureConfirmPassword.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () => obscureConfirmPassword.value =
+                                !obscureConfirmPassword.value,
+                          ),
                         ),
                       ],
                     ),

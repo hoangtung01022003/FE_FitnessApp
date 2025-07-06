@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:finess_app/routes/router.dart';
 import 'package:finess_app/viewModels/auth/auth_providers.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
@@ -14,8 +14,8 @@ class LoginViewModel {
   final Ref ref;
 
   // Controllers cho các trường nhập liệu
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   // Flag để theo dõi trạng thái lỗi đã xử lý
   bool _errorHandled = false;
@@ -23,6 +23,13 @@ class LoginViewModel {
   bool _navigationHandled = false;
 
   LoginViewModel(this.ref);
+
+  // Phương thức mới để cập nhật controllers từ hooks
+  void setControllers(
+      TextEditingController email, TextEditingController password) {
+    emailController = email;
+    passwordController = password;
+  }
 
   // Kiểm tra trạng thái loading
   bool get isLoading => ref.read(authNotifierProvider).isLoading;
@@ -124,9 +131,5 @@ class LoginViewModel {
     }
   }
 
-  // Giải phóng tài nguyên khi không sử dụng nữa
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-  }
+  // Không cần gọi dispose nữa vì controllers được quản lý bởi hooks
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:finess_app/routes/router.dart';
 import 'package:finess_app/viewModels/auth/auth_providers.dart';
+import 'package:finess_app/viewModels/menu_state.dart';
 
 class MenuItem {
   final String title;
@@ -10,33 +11,15 @@ class MenuItem {
   MenuItem({required this.title, required this.icon});
 }
 
-// Tạo class state để lưu trữ trạng thái
-class MenuState {
-  final String selectedItem;
-
-  const MenuState({
-    this.selectedItem = 'Running',
-  });
-
-  // Phương thức để tạo một state mới dựa trên state hiện tại
-  MenuState copyWith({
-    String? selectedItem,
-  }) {
-    return MenuState(
-      selectedItem: selectedItem ?? this.selectedItem,
-    );
-  }
-}
-
-// Chuyển đổi từ ChangeNotifierProvider sang StateNotifierProvider
+// Chuyển đổi sang hooks_riverpod StateNotifierProvider với Freezed state
 final menuViewModelProvider = StateNotifierProvider<MenuViewModel, MenuState>(
     (ref) => MenuViewModel(ref: ref));
 
-// Chuyển đổi từ ChangeNotifier sang StateNotifier
+// StateNotifier sử dụng Freezed state
 class MenuViewModel extends StateNotifier<MenuState> {
-  final Ref? _ref; // Thay đổi kiểu từ Ref sang Ref?
+  final Ref _ref;
 
-  MenuViewModel({Ref? ref})
+  MenuViewModel({required Ref ref})
       : _ref = ref,
         super(const MenuState());
 
@@ -80,7 +63,7 @@ class MenuViewModel extends StateNotifier<MenuState> {
   // Thêm phương thức đăng xuất
   Future<void> logout(BuildContext context) async {
     try {
-      await _ref?.read(authNotifierProvider.notifier).logout();
+      await _ref.read(authNotifierProvider.notifier).logout();
 
       // Điều hướng về màn hình đăng nhập sau khi đăng xuất
       if (context.mounted) {

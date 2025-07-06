@@ -1,10 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:finess_app/models/user/user.dart';
 import 'package:finess_app/repositories/auth/auth_repository_interface.dart';
 import 'package:finess_app/services/storage/auth_storage_service.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 
-// AuthNotifier - Xử lý các logic xác thực
+// AuthNotifier - Xử lý các logic xác thực với freezed state
 class AuthNotifier extends StateNotifier<AuthState> {
   final IAuthRepository _authRepository;
   final AuthStorageService _authStorage;
@@ -14,7 +14,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required AuthStorageService authStorage,
   })  : _authRepository = authRepository,
         _authStorage = authStorage,
-        super(AuthState());
+        super(const AuthState());
 
   // Khởi tạo trạng thái ban đầu từ storage
   Future<void> initializeAuthState() async {
@@ -32,8 +32,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
             token: token,
             user: email != null
                 ? User(
-                    id: userId.toString(), // Chuyển từ int sang String
-                    username: username ?? '', // Sử dụng username thay vì name
+                    id: userId.toString(),
+                    username: username ?? '',
                     email: email,
                   )
                 : null,
@@ -42,7 +42,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
     } catch (e) {
       // Nếu có lỗi, đặt lại trạng thái
-      state = AuthState();
+      state = const AuthState();
     }
   }
 
@@ -62,16 +62,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // Lưu thông tin đăng nhập vào storage
       await _authStorage.saveAuthInfo(
         token: authResponse.token,
-        userId: int.tryParse(authResponse.user.id) ??
-            0, // Chuyển từ String sang int
+        userId: int.tryParse(authResponse.user.id) ?? 0,
         email: authResponse.user.email,
-        name: authResponse.user.username, // Sử dụng username thay vì name
+        name: authResponse.user.username,
       );
 
       // Cập nhật state khi thành công
       state = state.copyWith(
         isLoading: false,
-        isAuthenticated: true, // Đặt isAuthenticated = true
+        isAuthenticated: true,
         user: authResponse.user,
         token: authResponse.token,
         hasError: false,
@@ -118,16 +117,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // Lưu thông tin đăng nhập vào storage
       await _authStorage.saveAuthInfo(
         token: authResponse.token,
-        userId: int.tryParse(authResponse.user.id) ??
-            0, // Chuyển từ String sang int
+        userId: int.tryParse(authResponse.user.id) ?? 0,
         email: authResponse.user.email,
-        name: authResponse.user.username, // Sử dụng username thay vì name
+        name: authResponse.user.username,
       );
 
       // Cập nhật state khi thành công
       state = state.copyWith(
         isLoading: false,
-        isAuthenticated: true, // Đặt isAuthenticated = true
+        isAuthenticated: true,
         user: authResponse.user,
         token: authResponse.token,
         hasError: false,
@@ -166,7 +164,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await _authStorage.logout();
 
       // Reset về trạng thái ban đầu
-      state = AuthState();
+      state = const AuthState();
     } catch (e) {
       state = state.copyWith(
         isLoading: false,

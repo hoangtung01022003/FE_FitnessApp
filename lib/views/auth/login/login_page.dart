@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:finess_app/global/custom_button.dart';
 import 'package:finess_app/global/header_bar.dart';
 import 'package:finess_app/global/custom_text_field.dart';
@@ -7,13 +8,40 @@ import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/login_view_model.dart';
 import 'package:finess_app/views/auth/register/register_page.dart';
 
-class LoginPage extends ConsumerWidget {
+class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Sử dụng TextEditingController với hooks để tự động dispose
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+
+    // Tạo state cho việc hiển thị password
+    final obscurePassword = useState(true);
+
+    // Animation controller cho button loading
+    final animationController =
+        useAnimationController(duration: const Duration(milliseconds: 300));
+
     // Sử dụng ViewModel
     final viewModel = ref.watch(loginViewModelProvider);
+
+    // Thêm các controller từ hook vào view model
+    useEffect(() {
+      viewModel.setControllers(emailController, passwordController);
+      return null;
+    }, []);
+
+    // Hook để animate loading button khi state thay đổi
+    useEffect(() {
+      if (viewModel.isLoading) {
+        animationController.forward();
+      } else {
+        animationController.reverse();
+      }
+      return null;
+    }, [viewModel.isLoading]);
 
     // Hiển thị thông báo lỗi
     void showErrorMessage(String message) {
@@ -57,13 +85,22 @@ class LoginPage extends ConsumerWidget {
                       children: [
                         const SizedBox(height: 20),
                         CustomTextField(
-                          controller: viewModel.emailController,
+                          controller: emailController,
                           hint: 'Email',
                         ),
                         CustomTextField(
-                          controller: viewModel.passwordController,
+                          controller: passwordController,
                           hint: 'Password',
-                          obscure: true,
+                          obscure: obscurePassword.value,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              obscurePassword.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () =>
+                                obscurePassword.value = !obscurePassword.value,
+                          ),
                         ),
                       ],
                     ),
