@@ -1,14 +1,14 @@
+// Provider cho repository xác thực
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:finess_app/global/dio_client.dart';
 import 'package:finess_app/models/user/user.dart';
 import 'package:finess_app/repositories/auth/auth_repository.dart';
 import 'package:finess_app/repositories/auth/auth_repository_interface.dart';
 import 'package:finess_app/services/storage/auth_storage_provider.dart';
 import 'package:finess_app/viewModels/auth/auth_notifier.dart';
-import 'package:finess_app/viewModels/auth/auth_state.dart';
+import 'package:finess_app/viewModels/auth/auth_state.dart' show AuthState;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// Provider cho repository xác thực
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   final dio = ref.watch(dioProvider);
   return AuthRepository(dio);
