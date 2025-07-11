@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:finess_app/viewModels/home/home_state.dart';
 
-// Tạo class state để lưu trữ trạng thái
-class HomeState {
-  // Thêm các thuộc tính trạng thái nếu cần
-
-  const HomeState();
-
-  // Phương thức để cập nhật trạng thái nếu cần
-  HomeState copyWith() {
-    return const HomeState();
-  }
-}
-
-// Chuyển đổi từ ChangeNotifierProvider sang StateNotifierProvider
+// Chuyển đổi từ ChangeNotifierProvider sang StateNotifierProvider với freezed state
 final homeViewModelProvider =
     StateNotifierProvider<HomeViewModel, HomeState>((ref) => HomeViewModel());
 
-// Chuyển đổi từ ChangeNotifier sang StateNotifier
+// Chuyển đổi từ ChangeNotifier sang StateNotifier với freezed state
 class HomeViewModel extends StateNotifier<HomeState> {
   HomeViewModel() : super(const HomeState());
+
+  // Có thể thêm các phương thức để thay đổi state ở đây
+  void updateSelectedWorkout(String workout) {
+    state = state.copyWith(selectedWorkout: workout);
+  }
 
   Widget buildExerciseRow({
     required IconData icon,

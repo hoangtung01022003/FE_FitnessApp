@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:finess_app/global/custom_button.dart';
 import 'package:finess_app/global/header_bar.dart';
-import 'package:finess_app/viewModels/home_view_model.dart';
+import 'package:finess_app/viewModels/home/home_view_model.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});

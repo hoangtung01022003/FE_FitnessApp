@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:finess_app/routes/router.dart';
 import 'package:finess_app/viewModels/auth/auth_providers.dart';
-import 'package:finess_app/viewModels/menu_state.dart';
+import 'package:finess_app/viewModels/menu/menu_state.dart';
 
 class MenuItem {
   final String title;

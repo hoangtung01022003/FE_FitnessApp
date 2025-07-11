@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:finess_app/viewModels/exercises_state.dart';
+import 'package:finess_app/viewModels/exercises/exercises_state.dart';
 
 final exercisesViewModelProvider =
     StateNotifierProvider<ExercisesViewModel, ExercisesState>(
