@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ApiService {
   final Dio _dio = Dio();
-  final String _baseUrl = 'http://localhost:8000/api';
+  final String _baseUrl = 'http://172.20.192.1:8000/api/';
 
   // Sử dụng CORS proxy để bypass CORS
   final String _corsProxyUrl = 'https://corsproxy.io/?';
@@ -38,5 +38,13 @@ class ApiService {
     }
   }
 
-  // Thêm các phương thức API khác tương tự...
+  // Phương thức để kiểm tra profile của người dùng
+  Future<Response> getProfile(String token) async {
+    try {
+      _dio.options.headers['Authorization'] = 'Bearer $token';
+      return await _dio.get(_getUrl('profile'));
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

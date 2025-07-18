@@ -1,3 +1,4 @@
+import 'package:finess_app/viewModels/auth/auth_providers.dart';
 import 'package:finess_app/views/auth/home_page.dart';
 import 'package:finess_app/views/auth/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ class MenuPage extends HookConsumerWidget {
     final state = ref.watch(menuViewModelProvider);
     final viewModelNotifier = ref.read(menuViewModelProvider.notifier);
 
+    // Lấy thông tin user từ authNotifierProvider
+    final authState = ref.watch(authNotifierProvider);
+    final username = authState.user?.username ?? 'Hoàng Văn Tùng';
+
     // Sử dụng useEffect để thực hiện các thao tác khi widget được render
     useEffect(() {
       // Có thể thực hiện các side-effects ở đây, ví dụ:
@@ -36,10 +41,10 @@ class MenuPage extends HookConsumerWidget {
         child: Column(
           children: [
             const SizedBox(height: 50),
-            const ListTile(
-              leading: CircleAvatar(),
-              title: Text('User'),
-              trailing: Icon(
+            ListTile(
+              leading: const CircleAvatar(),
+              title: Text(username),
+              trailing: const Icon(
                 Icons.menu,
                 color: Colors.red,
               ),
@@ -126,8 +131,9 @@ class MenuPage extends HookConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('User',
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                    Text(username,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16)),
                     GestureDetector(
                       onTap: () {
                         // Navigate to profile page
@@ -164,7 +170,10 @@ class MenuPage extends HookConsumerWidget {
                     if (item.title == 'Home') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const HomePage()),
+                        MaterialPageRoute(
+                          builder: (_) => const HomePage(),
+                          fullscreenDialog: false,
+                        ),
                       );
                     }
                   },

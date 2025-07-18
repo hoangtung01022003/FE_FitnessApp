@@ -4,12 +4,14 @@ class CustomButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final double? width; // Thêm tham số width
+  final Widget? child; // Thêm tham số child
 
   const CustomButton({
     super.key,
     required this.label,
     this.onPressed,
     this.width, // Thêm tham số này vào constructor
+    this.child, // Thêm tham số child vào constructor
   });
 
   @override
@@ -27,8 +29,10 @@ class CustomButton extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         ),
-        child: Text(label,
-            style: const TextStyle(color: Colors.white, fontSize: 20)),
+        // Sử dụng child nếu được cung cấp, nếu không thì sử dụng label
+        child: child ??
+            Text(label,
+                style: const TextStyle(color: Colors.white, fontSize: 20)),
       ),
     );
   }

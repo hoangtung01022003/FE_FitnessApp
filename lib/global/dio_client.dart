@@ -43,8 +43,8 @@ final dioProvider = Provider<Dio>((ref) {
   final baseUrl = ref.watch(baseUrlProvider);
   final dio = Dio(BaseOptions(
     baseUrl: baseUrl,
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 3),
+    connectTimeout: const Duration(seconds: 30), // Tăng từ 5s lên 30s
+    receiveTimeout: const Duration(seconds: 30), // Tăng từ 3s lên 30s
     contentType: 'application/json',
     responseType: ResponseType.json,
   ));

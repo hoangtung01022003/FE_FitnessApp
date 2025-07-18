@@ -6,6 +6,7 @@ import 'package:finess_app/global/header_bar.dart';
 import 'package:finess_app/global/custom_text_field.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/register_view_model.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class RegisterPage extends HookConsumerWidget {
   const RegisterPage({super.key});
@@ -74,71 +75,115 @@ class RegisterPage extends HookConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const HeaderBar(title: 'Register', showBack: true),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: usernameController,
-                          hint: 'Username',
-                        ),
-                        CustomTextField(
-                          controller: emailController,
-                          hint: 'Email',
-                        ),
-                        CustomTextField(
-                          controller: passwordController,
-                          hint: 'Password',
-                          obscure: obscurePassword.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              obscurePassword.value
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () =>
-                                obscurePassword.value = !obscurePassword.value,
-                          ),
-                        ),
-                        CustomTextField(
-                          controller: confirmPasswordController,
-                          hint: 'Confirm Password',
-                          obscure: obscureConfirmPassword.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              obscureConfirmPassword.value
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () => obscureConfirmPassword.value =
-                                !obscureConfirmPassword.value,
-                          ),
-                        ),
-                      ],
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: usernameController,
+                  hint: 'Username',
+                  enabled:
+                      !viewModel.isLoading, // Vô hiệu hóa input khi loading
+                ),
+                CustomTextField(
+                  controller: emailController,
+                  hint: 'Email',
+                  enabled:
+                      !viewModel.isLoading, // Vô hiệu hóa input khi loading
+                ),
+                CustomTextField(
+                  controller: passwordController,
+                  hint: 'Password',
+                  obscure: obscurePassword.value,
+                  enabled:
+                      !viewModel.isLoading, // Vô hiệu hóa input khi loading
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePassword.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
+                    onPressed: viewModel.isLoading
+                        ? null // Vô hiệu hóa khi loading
+                        : () => obscurePassword.value = !obscurePassword.value,
                   ),
+                ),
+                CustomTextField(
+                  controller: confirmPasswordController,
+                  hint: 'Confirm Password',
+                  obscure: obscureConfirmPassword.value,
+                  enabled:
+                      !viewModel.isLoading, // Vô hiệu hóa input khi loading
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscureConfirmPassword.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: viewModel.isLoading
+                        ? null // Vô hiệu hóa khi loading
+                        : () => obscureConfirmPassword.value =
+                            !obscureConfirmPassword.value,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Button đăng ký với hiệu ứng loading
+                SizedBox(
+                  width: double.infinity,
+                  height: 50, // Chiều cao cố định cho button
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Button đăng ký
+                      AnimatedOpacity(
+                        opacity: viewModel.isLoading ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 250),
+                        child: CustomButton(
+                          label: 'Register',
+                          onPressed: viewModel.isLoading
+                              ? null
+                              : () => viewModel.register(),
+                        ),
+                      ),
+
+                      // Hiệu ứng loading
+                      AnimatedOpacity(
+                        opacity: viewModel.isLoading ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 250),
+                        child: LoadingAnimationWidget.staggeredDotsWave(
+                          color: Colors.orange,
+                          size: 40,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Already have an account?'),
+                    TextButton(
+                      onPressed: viewModel.isLoading
+                          ? null // Vô hiệu hóa khi loading
+                          : () {
+                              // Quay lại màn hình đăng nhập
+                              Navigator.pop(context);
+                            },
+                      child: const Text('Login'),
+                    ),
+                  ],
                 ),
               ],
             ),
-            Positioned(
-              bottom: 50,
-              left: 16,
-              right: 16,
-              child: CustomButton(
-                label: viewModel.isLoading ? 'Loading...' : 'Register',
-                onPressed: viewModel.isLoading ? null : viewModel.register,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

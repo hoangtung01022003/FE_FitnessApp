@@ -7,6 +7,7 @@ import 'package:finess_app/global/custom_text_field.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
 import 'package:finess_app/viewModels/auth/login_view_model.dart';
 import 'package:finess_app/views/auth/register/register_page.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
@@ -71,72 +72,95 @@ class LoginPage extends HookConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const HeaderBar(title: 'Sign in'),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        CustomTextField(
-                          controller: emailController,
-                          hint: 'Email',
-                        ),
-                        CustomTextField(
-                          controller: passwordController,
-                          hint: 'Password',
-                          obscure: obscurePassword.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              obscurePassword.value
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () =>
-                                obscurePassword.value = !obscurePassword.value,
-                          ),
-                        ),
-                      ],
+                const HeaderBar(title: 'Login', showBack: true),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: emailController,
+                  hint: 'Email',
+                  enabled:
+                      !viewModel.isLoading, // Vô hiệu hóa input khi loading
+                ),
+                CustomTextField(
+                  controller: passwordController,
+                  hint: 'Password',
+                  obscure: obscurePassword.value,
+                  enabled:
+                      !viewModel.isLoading, // Vô hiệu hóa input khi loading
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscurePassword.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                     ),
+                    onPressed: viewModel.isLoading
+                        ? null // Vô hiệu hóa khi loading
+                        : () => obscurePassword.value = !obscurePassword.value,
                   ),
+                ),
+                const SizedBox(height: 20),
+
+                // Button đăng nhập với hiệu ứng loading
+                SizedBox(
+                  width: double.infinity,
+                  height: 50, // Chiều cao cố định cho button
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Button login
+                      AnimatedOpacity(
+                        opacity: viewModel.isLoading ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 250),
+                        child: CustomButton(
+                          label: 'Login',
+                          onPressed: viewModel.isLoading
+                              ? null
+                              : () => viewModel.login(),
+                        ),
+                      ),
+
+                      // Hiệu ứng loading
+                      AnimatedOpacity(
+                        opacity: viewModel.isLoading ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 250),
+                        child: LoadingAnimationWidget.staggeredDotsWave(
+                          color: Colors.orange,
+                          size: 40,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account?"),
+                    TextButton(
+                      onPressed: viewModel.isLoading
+                          ? null // Vô hiệu hóa khi loading
+                          : () {
+                              // Chuyển đến màn hình đăng ký
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const RegisterPage()),
+                              );
+                            },
+                      child: const Text('Register'),
+                    ),
+                  ],
                 ),
               ],
             ),
-            Positioned(
-              bottom: 110,
-              left: 16,
-              right: 16,
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const RegisterPage()),
-                    );
-                  },
-                  child: const Text(
-                    "Don't have an account?",
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 50,
-              left: 16,
-              right: 16,
-              child: CustomButton(
-                label: viewModel.isLoading ? 'Loading...' : 'Sign in',
-                onPressed: viewModel.isLoading ? null : viewModel.login,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -13,5 +13,7 @@ class AuthState with _$AuthState {
     String? errorMessage,
     String? token,
     @Default(false) bool isRegistering,
+    @Default(false)
+    bool hasProfile, // Thêm trường này để đánh dấu người dùng đã có profile
   }) = _AuthState;
 }

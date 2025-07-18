@@ -110,8 +110,19 @@ class LoginViewModel {
             .read(authNotifierProvider.notifier)
             .hasCompletedOnboarding();
 
+        // Kiểm tra xem người dùng đã có profile chưa
+        final hasProfile = current.hasProfile;
+
         if (!hasCompletedOnboarding) {
-          // Nếu chưa hoàn thành onboarding, chuyển đến màn hình welcome
+          // Nếu chưa hoàn thành onboarding, chuyển đến welcome page
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              AppRouter.welcome,
+              (route) => false, // Xóa tất cả màn hình trước đó
+            );
+          }
+        } else if (!hasProfile) {
+          // Nếu đã onboarding nhưng chưa có profile, chuyển đến trang step1
           if (context.mounted) {
             Navigator.of(context).pushNamedAndRemoveUntil(
               AppRouter.welcome,
@@ -119,11 +130,11 @@ class LoginViewModel {
             );
           }
         } else {
-          // Nếu đã hoàn thành onboarding, chuyển đến màn hình chính
+          // Nếu đã hoàn thành onboarding và có profile, chuyển đến màn hình chính
           if (context.mounted) {
             Navigator.of(context).pushNamedAndRemoveUntil(
               AppRouter.home,
-              (route) => false, // Xóa tất cả màn hình trước đó
+              (route) => false,
             );
           }
         }

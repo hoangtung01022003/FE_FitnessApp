@@ -8,6 +8,7 @@ import 'package:finess_app/global/tappable_dot_indicator.dart';
 import 'package:finess_app/global/widgets/date_picker_field.dart';
 import 'package:finess_app/global/widgets/gender_selector.dart';
 import 'package:finess_app/global/widgets/number_picker_field.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Step3PersonalDetails extends HookConsumerWidget {
   const Step3PersonalDetails({super.key});
@@ -171,7 +172,7 @@ class Step3PersonalDetails extends HookConsumerWidget {
                         child: const Text('Back'),
                       ),
                       CustomButton(
-                        label: state.isLoading ? 'Saving...' : 'Complete',
+                        label: state.isLoading ? '' : 'Complete',
                         onPressed: state.isLoading
                             ? null
                             : () {
@@ -194,6 +195,12 @@ class Step3PersonalDetails extends HookConsumerWidget {
                                 });
                               },
                         width: 150,
+                        child: state.isLoading
+                            ? LoadingAnimationWidget.staggeredDotsWave(
+                                color: Colors.white,
+                                size: 30,
+                              )
+                            : null,
                       ),
                     ],
                   ),

@@ -5,17 +5,17 @@ import 'package:finess_app/models/exercise/exercise_model.dart';
 /// Free and open API for fitness exercises with GIFs and metadata.
 class ExerciseDBService {
   final Dio _dio;
-  final String baseUrl = 'https://exercisedb-api.vercel.app';
+  final String baseUrl = 'https://hoangtung01022003.vercel.app';
 
   ExerciseDBService() : _dio = Dio();
 
   /// Fetch all exercises
-  Future<List<Exercise>> fetchAllExercises() async {
+  Future<List<ExerciseModel>> fetchAllExercises() async {
     try {
       final response = await _dio.get('$baseUrl/exercises');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((e) => Exercise.fromJson(e)).toList();
+        return data.map((e) => ExerciseModel.fromJson(e)).toList();
       } else {
         throw Exception('Failed to fetch exercises');
       }
@@ -25,12 +25,12 @@ class ExerciseDBService {
   }
 
   /// Fetch exercises by body part (e.g. "chest", "legs", "back")
-  Future<List<Exercise>> fetchByBodyPart(String part) async {
+  Future<List<ExerciseModel>> fetchByBodyPart(String part) async {
     try {
       final response = await _dio.get('$baseUrl/exercises/bodyPart/$part');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((e) => Exercise.fromJson(e)).toList();
+        return data.map((e) => ExerciseModel.fromJson(e)).toList();
       } else {
         throw Exception('Failed to fetch exercises by body part');
       }
@@ -40,12 +40,12 @@ class ExerciseDBService {
   }
 
   /// Fetch exercises by target muscle (e.g. "abs", "quads")
-  Future<List<Exercise>> fetchByTarget(String target) async {
+  Future<List<ExerciseModel>> fetchByTarget(String target) async {
     try {
       final response = await _dio.get('$baseUrl/exercises/target/$target');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((e) => Exercise.fromJson(e)).toList();
+        return data.map((e) => ExerciseModel.fromJson(e)).toList();
       } else {
         throw Exception('Failed to fetch exercises by target');
       }
@@ -55,13 +55,13 @@ class ExerciseDBService {
   }
 
   /// Fetch exercises by equipment (e.g. "dumbbell", "barbell", "body weight")
-  Future<List<Exercise>> fetchByEquipment(String equipment) async {
+  Future<List<ExerciseModel>> fetchByEquipment(String equipment) async {
     try {
       final response =
           await _dio.get('$baseUrl/exercises/equipment/$equipment');
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((e) => Exercise.fromJson(e)).toList();
+        return data.map((e) => ExerciseModel.fromJson(e)).toList();
       } else {
         throw Exception('Failed to fetch exercises by equipment');
       }

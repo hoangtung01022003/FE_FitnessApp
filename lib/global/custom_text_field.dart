@@ -4,14 +4,17 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool obscure;
-  final Widget? suffixIcon; // Thêm tham số suffixIcon
+  final Widget? suffixIcon;
+  final bool enabled; // Move this to be a proper class field
 
   const CustomTextField({
     super.key,
     required this.controller,
     required this.hint,
     this.obscure = false,
-    this.suffixIcon, // Thêm tham số này vào constructor
+    this.suffixIcon,
+    this.enabled =
+        true, // Make it an optional parameter with default value true
   });
 
   @override
@@ -27,10 +30,11 @@ class CustomTextField extends StatelessWidget {
       child: TextField(
         controller: controller,
         obscureText: obscure,
+        enabled: enabled, // Use the enabled parameter here
         decoration: InputDecoration(
           hintText: hint,
           border: InputBorder.none,
-          suffixIcon: suffixIcon, // Sử dụng suffixIcon trong decoration
+          suffixIcon: suffixIcon,
         ),
       ),
     );

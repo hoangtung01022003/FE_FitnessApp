@@ -23,6 +23,7 @@ mixin _$AuthState {
   String? get errorMessage => throw _privateConstructorUsedError;
   String? get token => throw _privateConstructorUsedError;
   bool get isRegistering => throw _privateConstructorUsedError;
+  bool get hasProfile => throw _privateConstructorUsedError;
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -43,7 +44,8 @@ abstract class $AuthStateCopyWith<$Res> {
       User? user,
       String? errorMessage,
       String? token,
-      bool isRegistering});
+      bool isRegistering,
+      bool hasProfile});
 }
 
 /// @nodoc
@@ -68,6 +70,7 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
     Object? errorMessage = freezed,
     Object? token = freezed,
     Object? isRegistering = null,
+    Object? hasProfile = null,
   }) {
     return _then(_value.copyWith(
       isAuthenticated: null == isAuthenticated
@@ -98,6 +101,10 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
           ? _value.isRegistering
           : isRegistering // ignore: cast_nullable_to_non_nullable
               as bool,
+      hasProfile: null == hasProfile
+          ? _value.hasProfile
+          : hasProfile // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -117,7 +124,8 @@ abstract class _$$AuthStateImplCopyWith<$Res>
       User? user,
       String? errorMessage,
       String? token,
-      bool isRegistering});
+      bool isRegistering,
+      bool hasProfile});
 }
 
 /// @nodoc
@@ -140,6 +148,7 @@ class __$$AuthStateImplCopyWithImpl<$Res>
     Object? errorMessage = freezed,
     Object? token = freezed,
     Object? isRegistering = null,
+    Object? hasProfile = null,
   }) {
     return _then(_$AuthStateImpl(
       isAuthenticated: null == isAuthenticated
@@ -170,6 +179,10 @@ class __$$AuthStateImplCopyWithImpl<$Res>
           ? _value.isRegistering
           : isRegistering // ignore: cast_nullable_to_non_nullable
               as bool,
+      hasProfile: null == hasProfile
+          ? _value.hasProfile
+          : hasProfile // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -184,7 +197,8 @@ class _$AuthStateImpl implements _AuthState {
       this.user,
       this.errorMessage,
       this.token,
-      this.isRegistering = false});
+      this.isRegistering = false,
+      this.hasProfile = false});
 
   @override
   @JsonKey()
@@ -204,10 +218,13 @@ class _$AuthStateImpl implements _AuthState {
   @override
   @JsonKey()
   final bool isRegistering;
+  @override
+  @JsonKey()
+  final bool hasProfile;
 
   @override
   String toString() {
-    return 'AuthState(isAuthenticated: $isAuthenticated, isLoading: $isLoading, hasError: $hasError, user: $user, errorMessage: $errorMessage, token: $token, isRegistering: $isRegistering)';
+    return 'AuthState(isAuthenticated: $isAuthenticated, isLoading: $isLoading, hasError: $hasError, user: $user, errorMessage: $errorMessage, token: $token, isRegistering: $isRegistering, hasProfile: $hasProfile)';
   }
 
   @override
@@ -226,12 +243,14 @@ class _$AuthStateImpl implements _AuthState {
                 other.errorMessage == errorMessage) &&
             (identical(other.token, token) || other.token == token) &&
             (identical(other.isRegistering, isRegistering) ||
-                other.isRegistering == isRegistering));
+                other.isRegistering == isRegistering) &&
+            (identical(other.hasProfile, hasProfile) ||
+                other.hasProfile == hasProfile));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, isAuthenticated, isLoading,
-      hasError, user, errorMessage, token, isRegistering);
+      hasError, user, errorMessage, token, isRegistering, hasProfile);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -250,7 +269,8 @@ abstract class _AuthState implements AuthState {
       final User? user,
       final String? errorMessage,
       final String? token,
-      final bool isRegistering}) = _$AuthStateImpl;
+      final bool isRegistering,
+      final bool hasProfile}) = _$AuthStateImpl;
 
   @override
   bool get isAuthenticated;
@@ -266,6 +286,8 @@ abstract class _AuthState implements AuthState {
   String? get token;
   @override
   bool get isRegistering;
+  @override
+  bool get hasProfile;
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.

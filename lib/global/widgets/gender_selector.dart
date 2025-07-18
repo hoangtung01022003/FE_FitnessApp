@@ -45,7 +45,7 @@ class GenderSelector extends StatelessWidget {
               Expanded(
                 child: _buildGenderOption(
                   context,
-                  'male',
+                  'Male', // Changed from 'male' to 'Male'
                   Icons.male,
                   'Male',
                   Colors.blue,
@@ -55,7 +55,7 @@ class GenderSelector extends StatelessWidget {
               Expanded(
                 child: _buildGenderOption(
                   context,
-                  'female',
+                  'Female', // Changed from 'female' to 'Female'
                   Icons.female,
                   'Female',
                   Colors.pink,

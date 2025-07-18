@@ -119,7 +119,7 @@ class RegisterViewModel {
 
       // Sử dụng Future.microtask để tránh thay đổi state trong lúc đang build
       Future.microtask(() {
-        // Người dùng mới đăng ký luôn cần đi qua màn hình onboarding
+        // Người dùng mới đăng ký luôn cần đi qua màn hình onboarding từ step 1
         if (context.mounted) {
           Navigator.of(context).pushNamedAndRemoveUntil(
             AppRouter.welcome,

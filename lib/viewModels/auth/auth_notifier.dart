@@ -3,11 +3,13 @@ import 'package:finess_app/models/user/user.dart';
 import 'package:finess_app/repositories/auth/auth_repository_interface.dart';
 import 'package:finess_app/services/storage/auth_storage_service.dart';
 import 'package:finess_app/viewModels/auth/auth_state.dart';
+import 'package:finess_app/services/api/api_service.dart'; // Thêm import này
 
 // AuthNotifier - Xử lý các logic xác thực với freezed state
 class AuthNotifier extends StateNotifier<AuthState> {
   final IAuthRepository _authRepository;
   final AuthStorageService _authStorage;
+  final ApiService _apiService = ApiService(); // Thêm instance của ApiService
 
   AuthNotifier({
     required IAuthRepository authRepository,
@@ -27,6 +29,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         final username = await _authStorage.getUserName();
 
         if (token != null && userId != null) {
+          // Kiểm tra profile khi khởi tạo
+          final hasProfile = await checkUserProfile(token);
+
           state = state.copyWith(
             isAuthenticated: true,
             token: token,
@@ -37,12 +42,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
                     email: email,
                   )
                 : null,
+            hasProfile: hasProfile, // Cập nhật trạng thái hasProfile
           );
         }
       }
     } catch (e) {
       // Nếu có lỗi, đặt lại trạng thái
       state = const AuthState();
+    }
+  }
+
+  // Phương thức mới để kiểm tra profile người dùng
+  Future<bool> checkUserProfile(String token) async {
+    try {
+      final response = await _apiService.getProfile(token);
+      // Nếu response có dữ liệu profile, trả về true
+      return response.data['profile'] != null;
+    } catch (e) {
+      print('Error checking profile: $e');
+      return false;
     }
   }
 
@@ -67,6 +85,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         name: authResponse.user.username,
       );
 
+      // Kiểm tra profile sau khi đăng nhập
+      final hasProfile = await checkUserProfile(authResponse.token);
+
       // Cập nhật state khi thành công
       state = state.copyWith(
         isLoading: false,
@@ -75,6 +96,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         token: authResponse.token,
         hasError: false,
         errorMessage: null,
+        hasProfile: hasProfile, // Cập nhật trạng thái hasProfile
       );
     } catch (e) {
       // Chuẩn bị thông báo lỗi chi tiết hơn
@@ -122,6 +144,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         name: authResponse.user.username,
       );
 
+      // Khi đăng ký mới, người dùng chưa có profile
+      const hasProfile = false;
+
       // Cập nhật state khi thành công
       state = state.copyWith(
         isLoading: false,
@@ -130,6 +155,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         token: authResponse.token,
         hasError: false,
         errorMessage: null,
+        hasProfile:
+            hasProfile, // Cập nhật trạng thái hasProfile (luôn false khi đăng ký mới)
       );
     } catch (e) {
       // Cập nhật state khi có lỗi
@@ -140,6 +167,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: e.toString(),
       );
     }
+  }
+
+  // Cập nhật trạng thái hasProfile
+  void updateProfileStatus(bool hasProfile) {
+    state = state.copyWith(hasProfile: hasProfile);
   }
 
   // Đánh dấu đã hoàn thành onboarding

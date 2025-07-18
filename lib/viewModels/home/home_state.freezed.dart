@@ -18,6 +18,14 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$HomeState {
   String get selectedWorkout => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
+  bool get isError => throw _privateConstructorUsedError;
+  String? get errorMessage => throw _privateConstructorUsedError;
+  WorkoutPlan? get todayWorkout => throw _privateConstructorUsedError;
+  int get currentExerciseIndex => throw _privateConstructorUsedError;
+  bool get isWorkoutMode => throw _privateConstructorUsedError;
+  bool get isPaused => throw _privateConstructorUsedError;
+  List<CategoryModel> get categories => throw _privateConstructorUsedError;
+  bool get isLoadingCategories => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -31,7 +39,17 @@ abstract class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
-  $Res call({String selectedWorkout, bool isLoading});
+  $Res call(
+      {String selectedWorkout,
+      bool isLoading,
+      bool isError,
+      String? errorMessage,
+      WorkoutPlan? todayWorkout,
+      int currentExerciseIndex,
+      bool isWorkoutMode,
+      bool isPaused,
+      List<CategoryModel> categories,
+      bool isLoadingCategories});
 }
 
 /// @nodoc
@@ -51,6 +69,14 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   $Res call({
     Object? selectedWorkout = null,
     Object? isLoading = null,
+    Object? isError = null,
+    Object? errorMessage = freezed,
+    Object? todayWorkout = freezed,
+    Object? currentExerciseIndex = null,
+    Object? isWorkoutMode = null,
+    Object? isPaused = null,
+    Object? categories = null,
+    Object? isLoadingCategories = null,
   }) {
     return _then(_value.copyWith(
       selectedWorkout: null == selectedWorkout
@@ -60,6 +86,38 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isError: null == isError
+          ? _value.isError
+          : isError // ignore: cast_nullable_to_non_nullable
+              as bool,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      todayWorkout: freezed == todayWorkout
+          ? _value.todayWorkout
+          : todayWorkout // ignore: cast_nullable_to_non_nullable
+              as WorkoutPlan?,
+      currentExerciseIndex: null == currentExerciseIndex
+          ? _value.currentExerciseIndex
+          : currentExerciseIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      isWorkoutMode: null == isWorkoutMode
+          ? _value.isWorkoutMode
+          : isWorkoutMode // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPaused: null == isPaused
+          ? _value.isPaused
+          : isPaused // ignore: cast_nullable_to_non_nullable
+              as bool,
+      categories: null == categories
+          ? _value.categories
+          : categories // ignore: cast_nullable_to_non_nullable
+              as List<CategoryModel>,
+      isLoadingCategories: null == isLoadingCategories
+          ? _value.isLoadingCategories
+          : isLoadingCategories // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -73,7 +131,17 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       __$$HomeStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String selectedWorkout, bool isLoading});
+  $Res call(
+      {String selectedWorkout,
+      bool isLoading,
+      bool isError,
+      String? errorMessage,
+      WorkoutPlan? todayWorkout,
+      int currentExerciseIndex,
+      bool isWorkoutMode,
+      bool isPaused,
+      List<CategoryModel> categories,
+      bool isLoadingCategories});
 }
 
 /// @nodoc
@@ -91,6 +159,14 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   $Res call({
     Object? selectedWorkout = null,
     Object? isLoading = null,
+    Object? isError = null,
+    Object? errorMessage = freezed,
+    Object? todayWorkout = freezed,
+    Object? currentExerciseIndex = null,
+    Object? isWorkoutMode = null,
+    Object? isPaused = null,
+    Object? categories = null,
+    Object? isLoadingCategories = null,
   }) {
     return _then(_$HomeStateImpl(
       selectedWorkout: null == selectedWorkout
@@ -101,6 +177,38 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
+      isError: null == isError
+          ? _value.isError
+          : isError // ignore: cast_nullable_to_non_nullable
+              as bool,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      todayWorkout: freezed == todayWorkout
+          ? _value.todayWorkout
+          : todayWorkout // ignore: cast_nullable_to_non_nullable
+              as WorkoutPlan?,
+      currentExerciseIndex: null == currentExerciseIndex
+          ? _value.currentExerciseIndex
+          : currentExerciseIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      isWorkoutMode: null == isWorkoutMode
+          ? _value.isWorkoutMode
+          : isWorkoutMode // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isPaused: null == isPaused
+          ? _value.isPaused
+          : isPaused // ignore: cast_nullable_to_non_nullable
+              as bool,
+      categories: null == categories
+          ? _value._categories
+          : categories // ignore: cast_nullable_to_non_nullable
+              as List<CategoryModel>,
+      isLoadingCategories: null == isLoadingCategories
+          ? _value.isLoadingCategories
+          : isLoadingCategories // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -108,7 +216,18 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$HomeStateImpl implements _HomeState {
-  const _$HomeStateImpl({this.selectedWorkout = '', this.isLoading = false});
+  const _$HomeStateImpl(
+      {this.selectedWorkout = '',
+      this.isLoading = false,
+      this.isError = false,
+      this.errorMessage,
+      this.todayWorkout,
+      this.currentExerciseIndex = 0,
+      this.isWorkoutMode = false,
+      this.isPaused = false,
+      final List<CategoryModel> categories = const [],
+      this.isLoadingCategories = false})
+      : _categories = categories;
 
   @override
   @JsonKey()
@@ -116,10 +235,38 @@ class _$HomeStateImpl implements _HomeState {
   @override
   @JsonKey()
   final bool isLoading;
+  @override
+  @JsonKey()
+  final bool isError;
+  @override
+  final String? errorMessage;
+  @override
+  final WorkoutPlan? todayWorkout;
+  @override
+  @JsonKey()
+  final int currentExerciseIndex;
+  @override
+  @JsonKey()
+  final bool isWorkoutMode;
+  @override
+  @JsonKey()
+  final bool isPaused;
+  final List<CategoryModel> _categories;
+  @override
+  @JsonKey()
+  List<CategoryModel> get categories {
+    if (_categories is EqualUnmodifiableListView) return _categories;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_categories);
+  }
+
+  @override
+  @JsonKey()
+  final bool isLoadingCategories;
 
   @override
   String toString() {
-    return 'HomeState(selectedWorkout: $selectedWorkout, isLoading: $isLoading)';
+    return 'HomeState(selectedWorkout: $selectedWorkout, isLoading: $isLoading, isError: $isError, errorMessage: $errorMessage, todayWorkout: $todayWorkout, currentExerciseIndex: $currentExerciseIndex, isWorkoutMode: $isWorkoutMode, isPaused: $isPaused, categories: $categories, isLoadingCategories: $isLoadingCategories)';
   }
 
   @override
@@ -130,11 +277,37 @@ class _$HomeStateImpl implements _HomeState {
             (identical(other.selectedWorkout, selectedWorkout) ||
                 other.selectedWorkout == selectedWorkout) &&
             (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading));
+                other.isLoading == isLoading) &&
+            (identical(other.isError, isError) || other.isError == isError) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.todayWorkout, todayWorkout) ||
+                other.todayWorkout == todayWorkout) &&
+            (identical(other.currentExerciseIndex, currentExerciseIndex) ||
+                other.currentExerciseIndex == currentExerciseIndex) &&
+            (identical(other.isWorkoutMode, isWorkoutMode) ||
+                other.isWorkoutMode == isWorkoutMode) &&
+            (identical(other.isPaused, isPaused) ||
+                other.isPaused == isPaused) &&
+            const DeepCollectionEquality()
+                .equals(other._categories, _categories) &&
+            (identical(other.isLoadingCategories, isLoadingCategories) ||
+                other.isLoadingCategories == isLoadingCategories));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, selectedWorkout, isLoading);
+  int get hashCode => Object.hash(
+      runtimeType,
+      selectedWorkout,
+      isLoading,
+      isError,
+      errorMessage,
+      todayWorkout,
+      currentExerciseIndex,
+      isWorkoutMode,
+      isPaused,
+      const DeepCollectionEquality().hash(_categories),
+      isLoadingCategories);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -147,12 +320,37 @@ class _$HomeStateImpl implements _HomeState {
 
 abstract class _HomeState implements HomeState {
   const factory _HomeState(
-      {final String selectedWorkout, final bool isLoading}) = _$HomeStateImpl;
+      {final String selectedWorkout,
+      final bool isLoading,
+      final bool isError,
+      final String? errorMessage,
+      final WorkoutPlan? todayWorkout,
+      final int currentExerciseIndex,
+      final bool isWorkoutMode,
+      final bool isPaused,
+      final List<CategoryModel> categories,
+      final bool isLoadingCategories}) = _$HomeStateImpl;
 
   @override
   String get selectedWorkout;
   @override
   bool get isLoading;
+  @override
+  bool get isError;
+  @override
+  String? get errorMessage;
+  @override
+  WorkoutPlan? get todayWorkout;
+  @override
+  int get currentExerciseIndex;
+  @override
+  bool get isWorkoutMode;
+  @override
+  bool get isPaused;
+  @override
+  List<CategoryModel> get categories;
+  @override
+  bool get isLoadingCategories;
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.

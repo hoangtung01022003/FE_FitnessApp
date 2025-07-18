@@ -1,5 +1,6 @@
 class UserProfile {
   final int? id;
+  final int? userId; // Thêm trường user_id
   final String? fitnessLevel;
   final DateTime? birthday;
   final double? height;
@@ -8,6 +9,7 @@ class UserProfile {
 
   UserProfile({
     this.id,
+    this.userId, // Thêm vào constructor
     this.fitnessLevel,
     this.birthday,
     this.height,
@@ -19,6 +21,7 @@ class UserProfile {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'user_id': userId, // Thêm vào JSON
       'fitness_level': fitnessLevel,
       'birthday': birthday?.toIso8601String(),
       'height': height,
@@ -30,6 +33,7 @@ class UserProfile {
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       id: json['id'],
+      userId: json['user_id'], // Trích xuất từ JSON
       fitnessLevel: json['fitness_level'],
       birthday:
           json['birthday'] != null ? DateTime.parse(json['birthday']) : null,

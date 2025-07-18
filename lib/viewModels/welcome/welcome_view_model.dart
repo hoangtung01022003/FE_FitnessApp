@@ -72,13 +72,25 @@ class WelcomeViewModel extends StateNotifier<WelcomeState> {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
+      // Lấy thông tin người dùng hiện tại từ auth provider
+      final authState = _ref.read(authNotifierProvider);
+      final userId =
+          authState.user != null ? int.tryParse(authState.user!.id) : null;
+
+      print('Current user ID: $userId');
+
+      // Tạo profile với user_id
       final userProfile = UserProfile(
+        userId: userId, // Thêm user_id vào profile
         birthday: state.selectedBirthday,
         height: state.height,
         weight: state.weight,
         gender: state.selectedGender,
         fitnessLevel: state.selectedFitnessLevel,
       );
+
+      // Ghi log để debug
+      print('Saving profile with data: ${userProfile.toJson()}');
 
       await _ref
           .read(userProfileProvider.notifier)
@@ -90,6 +102,7 @@ class WelcomeViewModel extends StateNotifier<WelcomeState> {
       state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {
+      print('Error saving profile: $e');
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
       return false;
     }
